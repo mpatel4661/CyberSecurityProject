@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security Audit Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="logo" aria-label="Security Audit Platform logo">
+          <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+            <path d="M32 6 52 14v15c0 14.4-8.3 24.4-20 29C20.3 53.4 12 43.4 12 29V14L32 6Z" fill="none" stroke="currentColor" stroke-width="4"/>
+            <path d="M24 31l6 6 12-14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="eyebrow">Security audit workspace</p>
+          <h1>Website Vulnerability Scanner</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="theme-toggle" data-theme-toggle aria-label="Switch to dark mode">
+          <span class="theme-icon">◐</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main" class="dashboard">
+      <section class="hero card hero-card">
+        <div>
+          <p class="section-kicker">Frontend + backend + security headers + infra signals</p>
+          <h2>Ek hi dashboard me website ka risk, issues aur unke solutions dekhiye.</h2>
+          <p class="hero-copy">Yeh static demo platform owner-authorized audits ke liye design ki gayi hai. Isme frontend checks, backend/API review checklist, misconfiguration detection, security header analysis, dependency exposure hints, aur remediation guide cards included hain.</p>
+          <div class="hero-pills" role="list" aria-label="Highlights">
+            <span role="listitem">OWASP mapped findings</span>
+            <span role="listitem">Header health</span>
+            <span role="listitem">Risk scoring</span>
+            <span role="listitem">Remediation guidance</span>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="metric-stack">
+            <article>
+              <span>Total rules</span>
+              <strong id="ruleCount">18</strong>
+            </article>
+            <article>
+              <span>Critical patterns</span>
+              <strong id="criticalPatterns">6</strong>
+            </article>
+            <article>
+              <span>Report mode</span>
+              <strong>Interactive</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid-layout">
+        <section class="card form-card">
+          <div class="section-head">
+            <p class="eyebrow">New scan</p>
+            <h3>Target details</h3>
+          </div>
+          <form id="scanForm" class="scan-form">
+            <label>
+              <span>Website URL</span>
+              <input id="targetUrl" type="url" placeholder="https://example.com" required />
+            </label>
+            <label>
+              <span>Backend/API URL</span>
+              <input id="apiUrl" type="url" placeholder="https://api.example.com" />
+            </label>
+            <label>
+              <span>Auth type</span>
+              <select id="authType">
+                <option value="session">Session / Cookie</option>
+                <option value="jwt">JWT / Token</option>
+                <option value="basic">Basic Auth</option>
+                <option value="none">Public / None</option>
+              </select>
+            </label>
+            <label>
+              <span>Deployment notes</span>
+              <textarea id="notes" rows="4" placeholder="Example: Nginx + Node.js + React, admin panel available, file upload enabled"></textarea>
+            </label>
+            <div class="checkbox-row">
+              <label class="check-wrap">
+                <input id="hasHttps" type="checkbox" checked />
+                <span>HTTPS enabled</span>
+              </label>
+              <label class="check-wrap">
+                <input id="hasCsp" type="checkbox" />
+                <span>CSP configured</span>
+              </label>
+              <label class="check-wrap">
+                <input id="hasWaf" type="checkbox" />
+                <span>WAF present</span>
+              </label>
+              <label class="check-wrap">
+                <input id="hasRateLimit" type="checkbox" />
+                <span>Rate limiting</span>
+              </label>
+            </div>
+            <label class="check-wrap legal-box">
+              <input id="authorized" type="checkbox" required />
+              <span>Mere paas target website ko scan karne ki authorization hai.</span>
+            </label>
+            <div class="form-actions">
+              <button class="btn btn-primary" type="submit">Run audit</button>
+              <button class="btn btn-secondary" type="button" id="loadDemo">Load demo data</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card summary-card">
+          <div class="section-head">
+            <p class="eyebrow">Scan overview</p>
+            <h3>Risk summary</h3>
+          </div>
+          <div class="score-orb" aria-label="Risk score">
+            <div>
+              <span>Risk score</span>
+              <strong id="riskScore">0</strong>
+              <small id="riskLabel">No scan yet</small>
+            </div>
+          </div>
+          <div class="summary-grid">
+            <article><span>Critical</span><strong id="criticalCount">0</strong></article>
+            <article><span>High</span><strong id="highCount">0</strong></article>
+            <article><span>Medium</span><strong id="mediumCount">0</strong></article>
+            <article><span>Low</span><strong id="lowCount">0</strong></article>
+          </div>
+          <div class="health-bars">
+            <div>
+              <span>Frontend health</span>
+              <div class="progress"><i id="frontendBar" style="width: 0%"></i></div>
+            </div>
+            <div>
+              <span>Backend health</span>
+              <div class="progress"><i id="backendBar" style="width: 0%"></i></div>
+            </div>
+            <div>
+              <span>Infra health</span>
+              <div class="progress"><i id="infraBar" style="width: 0%"></i></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="grid-layout second-grid">
+        <section class="card wide-card">
+          <div class="section-head inline-head">
+            <div>
+              <p class="eyebrow">Findings</p>
+              <h3>Detected issues</h3>
+            </div>
+            <div class="filter-pills" id="severityFilters">
+              <button class="filter active" data-filter="all">All</button>
+              <button class="filter" data-filter="critical">Critical</button>
+              <button class="filter" data-filter="high">High</button>
+              <button class="filter" data-filter="medium">Medium</button>
+              <button class="filter" data-filter="low">Low</button>
+            </div>
+          </div>
+          <div id="findingsList" class="findings-list empty-state" aria-live="polite">
+            <div class="empty-illustration">🛡️</div>
+            <h4>No report generated yet</h4>
+            <p>Scan run karne ke baad yahan vulnerability cards, evidence, OWASP mapping aur remediation steps dikhai denge.</p>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <p class="eyebrow">Header analysis</p>
+            <h3>Recommended headers</h3>
+          </div>
+          <div id="headerStatus" class="mini-list"></div>
+        </section>
+      </section>
+
+      <section class="grid-layout second-grid">
+        <section class="card">
+          <div class="section-head">
+            <p class="eyebrow">Checklist</p>
+            <h3>Frontend checks</h3>
+          </div>
+          <ul id="frontendChecklist" class="checklist"></ul>
+        </section>
+        <section class="card">
+          <div class="section-head">
+            <p class="eyebrow">Checklist</p>
+            <h3>Backend checks</h3>
+          </div>
+          <ul id="backendChecklist" class="checklist"></ul>
+        </section>
+        <section class="card">
+          <div class="section-head">
+            <p class="eyebrow">Checklist</p>
+            <h3>Infra checks</h3>
+          </div>
+          <ul id="infraChecklist" class="checklist"></ul>
+        </section>
+      </section>
+
+      <section class="card report-card">
+        <div class="section-head">
+          <p class="eyebrow">Report</p>
+          <h3>Executive summary</h3>
+        </div>
+        <div id="executiveSummary" class="report-content">
+          <p>Abhi tak koi scan summary available nahi hai.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
